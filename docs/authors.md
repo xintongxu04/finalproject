@@ -2,21 +2,20 @@
 
 ## Authors
 
-- **yourfirstname lastname**. Author, maintainer.
-  [](https://orcid.org/0000-0002-1825-0097)
+- **Xintong Xu**. Author, maintainer.
 
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/vjcitn/bst260project-template/NA/NA/NA/blob/HEAD/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/xintongxu04/finalproject/blob/HEAD/DESCRIPTION)
 
-lastname y (2026). *bst260project: project code and narrative*. R
-package version 0.0.2, <https://github.com/youreponame>.
+Xu X (2026). *finalproject: BST260 final project*. R package version
+0.0.2, <https://xintongxu04.github.io/finalproject/>.
 
     @Manual{,
-      title = {bst260project: project code and narrative},
-      author = {yourfirstname lastname},
+      title = {finalproject: BST260 final project},
+      author = {Xintong Xu},
       year = {2026},
       note = {R package version 0.0.2},
-      url = {https://github.com/youreponame},
+      url = {https://xintongxu04.github.io/finalproject/},
     }

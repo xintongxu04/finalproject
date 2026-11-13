@@ -5,15 +5,18 @@ Authors@R:
     person(given = "Xintong",
            family = "Xu",
            role = c("aut", "cre"),
-           email = "xxu@hsph.harvard.edu",
-           comment = c(ORCID = "0000-0002-1825-0097"))
-Description: BST260 final project
+           email = "xxu@hsph.harvard.edu")
+Description: Provides public health datasets and supporting documentation for
+    the BST260 final project. The package supports reproducible exploration
+    and descriptive analysis of these datasets. Its companion website presents
+    project materials, data documentation, and analysis narratives.
 Depends: R (>= 4.5.0)
-Suggests: knitr, testthat, rmarkdown, pkgdown
+Suggests: knitr, testthat, rmarkdown, pkgdown, quarto
 License: Artistic-2.0
 VignetteBuilder: quarto
 Encoding: UTF-8
-URL: https://github.com/xintongxu04/finalproject
+URL: https://xintongxu04.github.io/finalproject/,
+    https://github.com/xintongxu04/finalproject
 BugReports: https://github.com/xintongxu04/finalproject/issues
 Config/roxygen2/version: 8.1.1
 Roxygen: list(markdown=TRUE)

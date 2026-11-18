@@ -2,150 +2,63 @@
 
 **To: BST260 Teaching Team, Fall 2026**
 
-This project will present two separate analyses: BMI and systolic blood
-pressure in NHANES, and food-preparation setting and reported foodborne
-outbreak size in CDC surveillance data. Each analysis will have its own
-vignette. The datasets represent different populations and will not be
-merged.
+For my final project, I plan to use two datasets introduced in class to
+study BMI and blood pressure, and differences in the size of reported
+foodborne outbreaks. I will present these as two separate analyses.
 
-## 1. BMI and systolic blood pressure
+## BMI and blood pressure
 
-**Question:** Among adults aged 40 years or older in the 2009–2012
-NHANES data, how is BMI associated with average systolic blood pressure?
+My first question is: **Among adults aged 40 and older, how is BMI
+associated with systolic blood pressure?**
 
-### Data and variables
+I will use `NHANESraw` from the [NHANES R
+package](https://cran.r-project.org/web/packages/NHANES/NHANES.pdf),
+which contains data from 2009–2012. Each observation represents one
+participant. BMI will be a continuous exposure, and average systolic
+blood pressure (`BPSysAve`, in mmHg) will be the outcome.
 
-I will use `NHANESraw` from the R package `NHANES` (version 2.1.4),
-containing 20,293 participants from the 2009–2010 and 2011–2012 cycles.
-Each observation represents one participant. This object retains
-survey-design variables and differs from the package’s resampled
-`NHANES` object. These packaged data are intended for educational use.
+I will start with summary statistics and a scatterplot, then use
+survey-weighted linear regression to account for the NHANES sampling
+design. I plan to adjust for age, sex, race/ethnicity, education,
+income-to-poverty ratio, and survey cycle. These variables capture
+demographic, social, and time differences that may relate to both BMI
+and blood pressure. I will report the estimated difference in blood
+pressure for a 5-unit increase in BMI, with a 95% confidence interval.
 
-The exposure is BMI in kg/m², modeled continuously and reported per
-5-unit increase. The outcome is `BPSysAve`, average systolic blood
-pressure in mmHg, a continuous variable. The target population is adults
-aged 40+ in the civilian, noninstitutionalized US population covered by
-NHANES, although missing data and the educational extract limit
-population inference.
+I will summarize missing values and initially analyze participants with
+complete information. I will also check how excluding participants with
+missing income affects the results. The data are cross-sectional, so the
+analysis cannot show that BMI causes changes in blood pressure.
 
-Before fitting models, I specify adjustment for age, sex, race/ethnicity
-(`Race1`), education, family income-to-poverty ratio (`Poverty`), and
-survey cycle. Age and sex relate to both body composition and blood
-pressure. Socioeconomic circumstances and social conditions can
-influence both outcomes; race/ethnicity will be treated as a
-social-context variable, not a biological explanation. Cycle accounts
-for differences between survey periods. Age and income-to-poverty ratio
-will initially be continuous; other covariates will be categorical.
+## Foodborne outbreak setting and size
 
-### Feasibility and analysis
+My second question is: **Among reported foodborne outbreaks, does the
+number of illnesses differ between restaurant and private-home
+food-preparation settings?**
 
-The extract contains 7,738 adults aged 40+, with 7,060 having both BMI
-and blood pressure observed. BMI is missing for 391, blood pressure for
-581, education for 17, and income-to-poverty ratio for 790. There are
-6,392 participants with all primary-model variables observed and
-positive examination weights.
+I will use the [CDC outbreak data](https://www.cdc.gov/nors/data/)
+provided in the package as `waterborne`. Each observation represents one
+outbreak. I will select foodborne outbreaks from 2009–2023 reported in a
+single US state or DC. Setting will be a categorical exposure, with
+private homes as the reference; the outcome will be the reported illness
+count. I will exclude other settings and records with missing, unknown,
+or mixed restaurant/home settings, and document these exclusions.
 
-I will describe missingness and participant characteristics, plot BMI
-against blood pressure, and fit survey-weighted linear regression. I
-will construct the design using strata (`SDMVSTRA`), clusters
-(`SDMVPSU`), and four-year examination weights (`WTMEC2YR / 2`). I will
-define the design on participants with positive examination weights
-before subsetting to the analysis domain. Results will include adjusted
-differences in mmHg and 95% confidence intervals.
+I will compare the distribution of outbreak sizes using tables and
+plots. I plan to use quasi-Poisson regression, adjusting for year,
+season, and state to account for differences over time and across
+locations. I will also examine whether adjusting for pathogen type
+changes the comparison among outbreaks with that information available.
 
-The primary analysis will use complete cases. I will compare included
-and excluded participants and examine sensitivity to omitting the income
-variable, including a comparison on the same sample. Residual plots and
-a nonlinear BMI term will assess model form. Survey weights do not
-automatically correct item nonresponse. Cross-sectional measurement,
-unavailable treatment information, unmeasured confounding, and age
-top-coding at 80 limit interpretation. Results will describe
-associations, not causal effects.
+Reporting may differ by setting, and these data do not include the total
+number of people exposed. Therefore, larger reported outbreaks would not
+necessarily mean a higher individual risk of illness.
 
-## 2. Setting and reported foodborne outbreak size
+## Final project
 
-**Question:** Among reported single-state foodborne outbreaks during
-2009–2023, does the mean reported number of illnesses differ between
-restaurant and private-home food-preparation settings?
-
-### Data and variables
-
-I will use the CDC outbreak extract supplied as `waterborne` in
-`finalproject`. Despite its name, it includes several transmission
-modes. Each observation is one reported outbreak. I will select
-`primary_mode == "Food"` and years 2009–2023, beginning with the NORS
-reporting era and ending with the last year in this extract. I will
-retain outbreaks assigned to one of the 50 states or the District of
-Columbia and exclude multistate and territorial records.
-
-The exposure is food-preparation setting, coded as restaurant versus
-private home, with private home as the reference. Restaurant categories
-begin with `Restaurant:`. Home categories are `Private home/residence`,
-`Residence - Single-family home`, and `Residence - Multi-unit housing`.
-Semicolon-separated settings will be retained only if all entries belong
-to the same exposure group. Other, mixed, unknown, and missing settings
-will be excluded from the primary comparison and counted in an exclusion
-summary. The outcome is `illnesses`, a count of reported cases within an
-outbreak.
-
-### Feasibility and analysis
-
-There are 11,358 foodborne outbreaks in 2009–2023. Applying the setting
-and geographic restrictions leaves 6,763 outbreaks: 5,836 restaurant and
-927 private-home outbreaks. Illness counts and months are observed in
-this subset.
-
-I will summarize counts, medians, and distributions by setting, then fit
-a log-link quasi-Poisson model to allow variance greater than the mean.
-The primary adjustment variables will be calendar year, season derived
-from month, and state, all categorical, to account for temporal,
-seasonal, geographic, and reporting differences. These variables are
-specified before estimating the setting association. I will report an
-adjusted mean count ratio and 95% confidence interval, with dispersion
-and influence checks.
-
-Etiology is missing for 1,722 eligible outbreaks. A sensitivity analysis
-among the remaining 5,041 will add prespecified etiology groups:
-norovirus, Salmonella, other single etiologies, and multiple etiologies.
-Missing etiology will not be interpreted as absence of a pathogen. I
-will also examine whether the association changes when restricting to
-2009–2019.
-
-Voluntary reporting, incomplete ascertainment, pathogen information, and
-the number of people served may differ by setting. These data contain
-outbreaks, not all meals or exposed people. Therefore, the comparison
-cannot estimate the risk of becoming ill after eating at a restaurant
-versus at home.
-
-## Deliverables
-
-I will create separate NHANES and outbreak vignettes with provenance,
-descriptive tables, plots, methods, findings, and limitations.
-Provenance will document the original data producer, source links, data
-periods, package or snapshot versions, access dates, and all selection
-and cleaning steps. Descriptive tables will include sample sizes,
-missingness, means and standard deviations, medians and interquartile
-ranges, and category counts and percentages as appropriate. I will
-validate the R package with `R CMD check`, resolve relevant issues,
-rebuild the pkgdown site, and publish the package source on GitHub and
-the rendered vignettes on GitHub Pages. Reusable R functions will
-summarize missingness and convert the outbreak list into a validated
-analysis table with documented setting categories. The package website
-title will remain **BST260 final project**. I will confirm the proposed
-NHANES question with the teaching team if it requires approval as a
-custom question.
-
-## Sources
-
-- [Project
-  instructions](https://vjcitn.github.io/bst260project-template/articles/instructions.html)
-- [Project ideas and proposal
-  guidance](https://vjcitn.github.io/bst260project-template/articles/stubs.html)
-- [NHANES R package
-  documentation](https://cran.r-project.org/web/packages/NHANES/NHANES.pdf)
-- [CDC NHANES weighting
-  guidance](https://wwwn.cdc.gov/nchs/nhanes/tutorials/weighting.aspx)
-- [CDC NORS data and reporting
-  information](https://www.cdc.gov/nors/data/)
-- [CDC outbreak dataset and data
-  dictionary](https://data.cdc.gov/Foodborne-Waterborne-and-Related-Diseases/NORS/5xkq-dg7x/about_data)
+I will write one vignette for each dataset, documenting its source and
+cleaning steps, descriptive statistics, analysis, findings, and
+limitations. I will also write reusable R functions for data preparation
+and summaries, check that the package builds correctly, and publish the
+vignettes on my pkgdown site, **BST260 final project**. I will confirm
+any required approval for the NHANES question with the teaching team.
